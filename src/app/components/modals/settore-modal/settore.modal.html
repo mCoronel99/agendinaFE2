@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>
+  {{ data?.settore.id ? 'Modifica Settore' : 'Nuovo Settore' }}
+</h2>
+
+<form [formGroup]="settoreForm" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="nome" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Capo</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_capo">
+      <mat-option
+        *ngFor="let dipendente of dipendentiOptions"
+        [value]="dipendente.id"
+      >
+        {{ dipendente.id }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="annulla()">Annulla</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="!this.settoreForm.valid"
+    >
+      {{ data?.settore.id ? 'Salva' : 'Aggiungi' }}
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>
+    {{ data?.progetto.id ? 'Modifica Progetto' : 'Nuovo Progetto' }}
+  </h2>
+  
+  <form [formGroup]="progettoForm" mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Titolo</mat-label>
+      <input matInput formControlName="titolo" />
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Settore</mat-label>
+      <!-- select con opzioni la lista dei dipendenti -->
+      <mat-select formControlName="id_settore">
+        <mat-option
+          *ngFor="let settore of settoreOptions"
+          [value]="settore.id"
+        >
+          {{ settore.nome }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Data di inizio</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="data_inizio"/>
+        <mat-datepicker-toggle matIconSuffix [for]="picker">
+          <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    
+  
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="annulla()">Annulla</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="save()"
+        [disabled]="!this.progettoForm.valid"
+      >
+        {{ data?.progetto.id ? 'Salva' : 'Aggiungi' }}
+      </button>
+    </mat-dialog-actions>
+  </form>
+  

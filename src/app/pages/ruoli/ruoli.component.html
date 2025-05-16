@@ -1,0 +1,16 @@
+<button mat-icon-button (click)="addRuoli()">
+    <mat-icon>add</mat-icon>
+  </button>
+   
+  <app-table 
+  [data]="dataSource"
+  [displayedColumns]="['id', 'tipo_ruoli']"
+  [columnLabels]="{
+  id:'ID',
+  tipo_ruoli:'Ruolo'
+  }"
+  title="Tabella Ruoli"
+  [actions]="true"
+  (edit)="editRuoli($event)"
+  (delete)="deleteRuoli($event)">
+</app-table>

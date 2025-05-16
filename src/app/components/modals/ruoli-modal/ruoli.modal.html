@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>
+    {{ data?.ruoli.id ? 'Modifica Ruolo' : 'Nuovo Ruolo' }}
+  </h2>
+
+  <form [formGroup]="ruoliForm" mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label></mat-label>
+      <input matInput formControlName="tipo_ruoli" />
+    </mat-form-field>
+
+
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="annulla()">Annulla</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="save()"
+        [disabled]="!this.ruoliForm.valid">
+        {{ data?.ruoli.id ? 'Salva' : 'Aggiungi' }}
+      </button>
+    </mat-dialog-actions>
+  </form>

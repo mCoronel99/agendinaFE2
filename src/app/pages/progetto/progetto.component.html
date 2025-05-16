@@ -1,0 +1,18 @@
+<button mat-icon-button (click)="addProgetto()">
+    <mat-icon>add</mat-icon>
+  </button>
+   
+  <app-table 
+  [data]="dataSource"
+  [displayedColumns]="['id', 'id_sett','titolo', 'data_inizio']"
+  [columnLabels]="{
+    id:'ID',
+    id_sett:'ID Settore',
+    titolo:'Titolo',
+    data_inizio:'Data inizio'
+  }"
+  title="Tabella Progetti"
+  [actions]="true"
+  (edit)="editProgetto($event)"
+  (delete)="deleteProgetto($event)">
+</app-table>

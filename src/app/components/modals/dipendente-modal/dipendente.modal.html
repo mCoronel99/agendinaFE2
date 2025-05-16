@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>
+  {{ data?.dipendente.id ? 'Modifica Dipendente' : 'Nuovo Dipendente' }}
+</h2>
+
+<form [formGroup]="dipendenteForm" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="nome" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Cognome</mat-label>
+    <input matInput formControlName="cognome" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Data di nascita</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="data_nascita"/>
+    <mat-datepicker-toggle matIconSuffix [for]="picker">
+      <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+    </mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</form>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="annulla()">Annulla</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="save()"
+    [disabled]="!this.dipendenteForm.valid"
+  >
+    {{ data?.dipendente.id ? 'Salva' : 'Aggiungi' }}
+  </button>
+</mat-dialog-actions>

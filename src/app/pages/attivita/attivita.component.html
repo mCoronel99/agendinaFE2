@@ -1,0 +1,21 @@
+<button mat-icon-button (click)="addAttivita()">
+  <mat-icon>add</mat-icon>
+</button>
+
+<app-table
+[data]="dataSource"
+[displayedColumns]="['id','id_dipendente','id_progetto','id_stato','descrizione','data_inizio','data_fine']"
+[columnLabels]="{
+  id:'ID',
+  id_dipendente:'ID Dipendente',
+  id_progetto: 'ID Progetto',
+  id_stato: 'Stato',
+  descrizione:'Descrizione',
+  data_inizio:'Data di inizio',
+  data_fine:'Data fine'
+}"
+title="Tabella Attività"
+[actions]="true"
+(edit)="editAttivita($event)"
+(delete)="deleteAttivita($event)">
+</app-table>

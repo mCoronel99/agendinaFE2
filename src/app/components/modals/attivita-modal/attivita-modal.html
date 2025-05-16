@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>
+  {{ data?.attivita.id ? 'Modifica Attività' : 'Nuova Attività' }}
+</h2>
+
+<form [formGroup]="attivitaForm" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Descrizione</mat-label>
+    <input matInput formControlName="descrizione" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Dipendenti</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_dipendente">
+      <mat-option
+        *ngFor="let dipendente of dipendenteOptions"
+        [value]="dipendente.id"
+      >
+        {{ dipendente.nome }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Progetto</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_progetto">
+      <mat-option
+        *ngFor="let progetto of progettoOptions"
+        [value]="progetto.id"
+      >
+        {{ progetto.titolo }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Stato</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_stato">
+      <mat-option
+        *ngFor="let stato of statoOptions"
+        [value]="stato.id"
+      >
+        {{ stato.stato }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Data di inizio</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="data_inizio"/>
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+  <mat-label>Data di fine</mat-label>
+  <input matInput [matDatepicker]="picker1" formControlName="data_fine" />
+  <mat-datepicker-toggle matIconSuffix [for]="picker1">
+    <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #picker1></mat-datepicker>
+  <mat-error *ngIf="attivitaForm.controls.data_fine.hasError('dateRange')">
+    La data di fine non può essere inferiore alla data d'inizio!
+  </mat-error>
+</mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="annulla()">Annulla</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="!this.attivitaForm.valid"
+    >
+      {{ data?.attivita.id ? 'Salva' : 'Aggiungi' }}
+    </button>
+  </mat-dialog-actions>
+</form>

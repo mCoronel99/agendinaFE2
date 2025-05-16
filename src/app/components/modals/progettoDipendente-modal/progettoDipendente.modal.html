@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>
+  {{ data?.progettoDipendente.id_dipendente &&
+  data?.progettoDipendente.id_progetto ? 'Modifica ProgettoDipendente' : 'Nuovo ProgettoDipendente' }}
+</h2><!--come faccio con la chiave composta??-->
+<form [formGroup]="progettoDipendenteForm" mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Dipendente</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_dipendente">
+      <mat-option
+        *ngFor="let dipendente of dipendentiOptions"
+        [value]="dipendente.id"
+      >
+        {{ dipendente.nome }} {{dipendente.cognome}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Progetto</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_progetto">
+      <mat-option
+        *ngFor="let progetto of progettiOptions"
+        [value]="progetto.id"
+      >
+        {{ progetto.titolo }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Ruolo</mat-label>
+    <!-- select con opzioni la lista dei dipendenti -->
+    <mat-select formControlName="id_ruolo">
+      <mat-option
+        *ngFor="let ruolo of ruoliOptions"
+        [value]="ruolo.id"
+      >
+        {{ ruolo.tipo_ruoli }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="annulla()">Annulla</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="!this.progettoDipendenteForm.valid"
+    >
+      {{ data?.progettoDipendente.id_dipendente &&
+      data?.progettoDipendente.id_progetto ? 'Salva' : 'Aggiungi' }}
+    </button>
+  </mat-dialog-actions>
+</form>

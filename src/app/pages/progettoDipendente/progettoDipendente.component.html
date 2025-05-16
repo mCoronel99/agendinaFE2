@@ -1,0 +1,17 @@
+<button mat-icon-button (click)="addProgettoDipendente()">
+  <mat-icon>add</mat-icon>
+</button>
+ 
+<app-table 
+  [data]="dataSource"
+  [displayedColumns]="['id_progetto', 'id_dipendente', 'id_ruolo']"
+  [columnLabels]="{
+    id_progetto:'ID Progetto',
+    id_dipendente: 'ID Dipendente',
+    id_ruolo: 'ID Ruolo'
+  }"
+  title="Tabella Progetti Dipendenti"
+  [actions]="true"
+  (edit)="editProgettoDipendente($event)"
+  (delete)="deleteProgettoDipendenti($event)">
+</app-table>

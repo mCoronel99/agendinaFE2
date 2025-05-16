@@ -1,0 +1,17 @@
+<button mat-icon-button (click)="addSettore()">
+  <mat-icon>add</mat-icon>
+</button>
+
+<app-table 
+  [data]="dataSource"
+  [displayedColumns]="['id', 'id_capo', 'nome']"
+  [columnLabels]="{
+  id: 'ID',
+  id_capo: 'ID Capo Settore',
+  nome:'Nome Settore'
+  }"
+  title="Tabella Settori"
+  [actions]="true"
+  (edit)="editSettore($event)"
+  (delete)="deleteSettore($event)">
+</app-table>
