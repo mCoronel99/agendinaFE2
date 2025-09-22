@@ -27,9 +27,9 @@ export class DipendentiService {
       this.http.put<Dipendente>(`${this.baseUrl}/update`, dipendente)
     );
   }
-  deleteDipendente(dipendente: Dipendente): Promise<void> {
+  deleteDipendente(id: number): Promise<void> {
     return firstValueFrom(
-      this.http.delete<void>(`${this.baseUrl}/delete/${dipendente.id}`)
+      this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
     );
   }
 }

@@ -27,9 +27,9 @@ export class SettoreService {
     );
   }
 
-  deleteSettore(settore: Settore): Promise<void> {
+  deleteSettore(id:number): Promise<void> {
     return firstValueFrom(
-      this.http.delete<void>(`${this.baseUrl}/delete/${settore.id}`)
+      this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
     );
   }
 }

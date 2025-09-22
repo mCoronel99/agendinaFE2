@@ -6,6 +6,10 @@ import { ConfirmationModal } from 'src/app/components/modals/confirmation-modal/
 import { Settore } from 'src/app/model/settore.interface';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ToastrService } from 'ngx-toastr';
+import { Store } from '@ngrx/store';
+import { map, Observable } from 'rxjs';
+import * as SettoreActions from '../../store/settore/settore.actions';
+import { selectSettore } from 'src/app/store/settore/settore.selectors';
 
 @Component({
   selector: 'app-settori',
@@ -13,18 +17,22 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./settore.component.css'],
 })
 export class SettoriComponent implements OnInit {
-  dataSource: Settore[] = [];
+  dataSource$!: Observable<Settore[]>;
   displayedColumns: string[] = ['id', 'id_capo', 'nome', 'azioni'];
 
   constructor(
     private settoreService: SettoreService,
     public dialog: MatDialog,
     private notification: NotificationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private store: Store
   ) {}
 
   async ngOnInit() {
-    this.dataSource = await this.settoreService.getSettori();
+    this.store.dispatch(SettoreActions.loadSettore())
+    this.dataSource$ = this.store.select(selectSettore).pipe(
+      map(settore => settore ?? [])
+    )
   }
 
   addSettore() {
@@ -35,13 +43,7 @@ export class SettoriComponent implements OnInit {
 
     dialogueRef.afterClosed().subscribe(async (settore: Settore) => {
       if (settore) {
-        this.settoreService
-          .addSettore(settore)
-          .then(async (res) => { console.log('chiama toastr')
-            this.notification.success('Aggiunto con successo', 'Successo');
-            this.dataSource = await this.settoreService.getSettori();
-          })
-          .catch((res) => this.notification.error('Errore nell\'aggiunta'));
+        this.store.dispatch(SettoreActions.addSettore({settore}))
       }
     });
   }
@@ -54,13 +56,7 @@ export class SettoriComponent implements OnInit {
 
     dialogueRef.afterClosed().subscribe(async (settore: Settore) => {
       if (settore) {
-        this.settoreService
-          .editSettore(settore)
-          .then(async (res) => {
-            this.notification.success('Modificato con successo');
-            this.dataSource = await this.settoreService.getSettori();
-          })
-          .catch((res) => this.notification.error('Errore Modifica'));
+        this.store.dispatch(SettoreActions.editSettore({settore}))
       }
     });
   }
@@ -70,14 +66,8 @@ export class SettoriComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirmation) => {
       if (confirmation) {
-        this.settoreService
-          .deleteSettore(sett)
-          .then(async (res) => { console.log('chiama toastr')
-            this.notification.success('Cancellato con successo');
-            this.dataSource = await this.settoreService.getSettori();
-          })
-          .catch((res) => this.notification.error('Errore nella cancellazione'));
-      }
+      this.store.dispatch(SettoreActions.deleteSettore({id: sett.id!}))
+    }
     });
   }
 

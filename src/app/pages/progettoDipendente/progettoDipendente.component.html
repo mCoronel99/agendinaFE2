@@ -1,9 +1,9 @@
 <button mat-icon-button (click)="addProgettoDipendente()">
   <mat-icon>add</mat-icon>
 </button>
- 
-<app-table 
-  [data]="dataSource"
+
+<app-table
+  [data]="(dataSource$ | async ) || []"
   [displayedColumns]="['id_progetto', 'id_dipendente', 'id_ruolo']"
   [columnLabels]="{
     id_progetto:'ID Progetto',

@@ -1,13 +1,20 @@
-import { AttivitaService } from './../../api/attivita/attivitaService';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Store } from '@ngrx/store';
+import { map, Observable } from 'rxjs';
+
+import { AttivitaService } from 'src/app/api/attivita/attivitaService';
 import { DipendentiService } from 'src/app/api/dipendenti/dipendenti.service';
 import { ProgettoService } from 'src/app/api/progetto/progetto.service';
 import { StatiService } from 'src/app/api/stati/statiService';
+
 import { AttivitaModal } from 'src/app/components/modals/attivita-modal/attivita-modal';
 import { ConfirmationModal } from 'src/app/components/modals/confirmation-modal/confirmation.modal';
-import { Attivita } from 'src/app/model/attivita.interface';
 import { NotificationService } from 'src/app/services/notification.service';
+
+import { Attivita } from 'src/app/model/attivita.interface';
+import * as AttivitaActions from 'src/app/store/attivita/attivita.actions';
+import { selectAttivita } from 'src/app/store/attivita/attivita.selectors';
 
 @Component({
   selector: 'app-attivita',
@@ -15,7 +22,7 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./attivita.component.css'],
 })
 export class AttivitaComponent implements OnInit {
-  dataSource: Attivita[] = [];
+  dataSource$!: Observable<Attivita[]>;
   displayedColumns: string[] = [
     'id',
     'id_dipendente',
@@ -27,81 +34,71 @@ export class AttivitaComponent implements OnInit {
     'actions',
   ];
 
+  dipendenteMap: { [key: number]: string } = {};
+  progettoMap: { [key: number]: string } = {};
+  statoMap: { [key: number]: string } = {};
+
   constructor(
     private attivitaService: AttivitaService,
     public dialog: MatDialog,
     private dipendenteService: DipendentiService,
     private progettoService: ProgettoService,
     private statoService: StatiService,
-    private notificaction: NotificationService
+    private notificaction: NotificationService,
+    private store: Store
   ) {}
 
-  dipendenteMap: { [key: number]: string } = {};
-  progettoMap: { [key: number]: string } = {};
-  statoMap: { [key: number]: string } = {};
 
-  async ngOnInit() {
-    this.dataSource = await this.attivitaService.getAttivita();
-    this.dipendenteService.getDipendenti();
-    this.progettoService.getProgetti();
-    this.statoService.getStati();
 
-  }
+ngOnInit() {
+  this.store.dispatch(AttivitaActions.loadAttivita());
+
+  this.dataSource$ = this.store.select(selectAttivita).pipe(
+    map(attivita => attivita ?? []) // 👈 evita il null
+  );
+
+  this.dipendenteService.getDipendenti();
+  this.progettoService.getProgetti();
+  this.statoService.getStati();
+}
+
 
   addAttivita() {
+  const dialogRef = this.dialog.open(AttivitaModal, {
+    data: null,
+    restoreFocus: false,
+  });
+
+  dialogRef.afterClosed().subscribe((attivita: Attivita) => {
+    if (attivita) {
+      this.store.dispatch(AttivitaActions.addAttivita({ attivita }));
+    }
+  });
+}
+
+
+  editAttivita(attiv: Attivita) {
     const dialogueRef = this.dialog.open(AttivitaModal, {
-      data: null,
+      data: { attivita: attiv },
       restoreFocus: false,
     });
 
     dialogueRef.afterClosed().subscribe(async (attivita: Attivita) => {
       if (attivita) {
-        this.attivitaService
-          .addAttivita(attivita)
-          .then(async (res) => {
-            this.notificaction.success('Aggiunto con successo!');
-            this.dataSource = await this.attivitaService.getAttivita();
-          })
-          .catch((res) => this.notificaction.error("Errore nell'aggiunta"));
+        this.store.dispatch(AttivitaActions.editAttivita({attivita}))
       }
     });
   }
 
-  editAttivita(attiv:Attivita){
-    const dialogueRef = this.dialog.open(AttivitaModal,{
-      data: {attivita: attiv},
+  deleteAttivita(attiv: Attivita) {
+    const dialogRef = this.dialog.open(ConfirmationModal, {
       restoreFocus: false,
     });
-    dialogueRef.afterClosed().subscribe(async( attivita: Attivita)=>{
-      if(attivita){
-        this.attivitaService
-        .editAttivita(attivita)
-        .then(async (res) => {
-          this.notificaction.success('Modificato con successo')
-          this.dataSource = await this.attivitaService.getAttivita();
-        })
-        .catch((res) => this.notificaction.error('Errore nella modifica'))
-      }
-    })
-  }
-
-  deleteAttivita(attiv:Attivita){
-    const dialogRef = this.dialog.open(ConfirmationModal, {restoreFocus: false,});
 
     dialogRef.afterClosed().subscribe((confirmation) => {
-
-      if(confirmation) {
-        this.attivitaService
-        .deleteAttivita(attiv)
-        .then (async(res) =>{
-          this.notificaction.success('Cancellato con successo');
-          this.dataSource = await this.attivitaService.getAttivita();
-
-        })
-        .catch((res) => this.notificaction.error('Errore nella cancellazione'))
+      if (confirmation) {
+       this.store.dispatch(AttivitaActions.deleteAttivita({id: attiv.id!}))
       }
-    })
+    });
   }
-
-
 }

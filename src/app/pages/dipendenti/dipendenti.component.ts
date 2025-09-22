@@ -5,6 +5,10 @@ import { Dipendente } from '../../model/dipendente.interface';
 import { DipendenteModal } from 'src/app/components/modals/dipendente-modal/dipendente.modal';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from 'src/app/services/notification.service';
+import { map, Observable } from 'rxjs';
+import * as DipendenteActions from '../../store/dipendente/dipendente.actions';
+import { Store } from '@ngrx/store';
+import { selectDipendente } from 'src/app/store/dipendente/dipendente.selectors';
 
 @Component({
   selector: 'app-dipendenti',
@@ -12,17 +16,21 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./dipendenti.component.css'],
 })
 export class DipendentiComponent implements OnInit {
-  dataSource: Dipendente[] = [];
+  dataSource$!: Observable<Dipendente[]>;
   displayedColumns: string[] = ['id', 'nome', 'cognome', 'dataN', 'azioni'];
 
   constructor(
     private dipendenteService: DipendentiService,
     public dialog: MatDialog,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private store: Store
   ) {}
 
   async ngOnInit() {
-    this.dataSource = await this.dipendenteService.getDipendenti();
+    this.store.dispatch(DipendenteActions.loadDipendente());
+    this.dataSource$ = this.store.select(selectDipendente).pipe
+    (map(dipendente => dipendente ?? [])
+  );
   }
 
   addDipendente() {
@@ -33,13 +41,7 @@ export class DipendentiComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (dipendente: Dipendente) => {
       if (dipendente) {
-        this.dipendenteService
-          .addDipendente(dipendente)
-          .then(async (res) => {
-            this.notification.success('Aggiunto con successo');
-            this.dataSource = await this.dipendenteService.getDipendenti();
-          })
-          .catch((res) => this.notification.error('Errore nell\'aggiunta'));
+        this.store.dispatch(DipendenteActions.addDipendente({dipendente}))
       }
     });
     // apri modale utilizzando angular material dialog
@@ -56,13 +58,7 @@ export class DipendentiComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (dipendente: Dipendente) => {
       if (dipendente) {
-        this.dipendenteService
-          .editDipendente(dipendente)
-          .then(async (res) => {
-            this.notification.success('Modificato con successo');
-            this.dataSource = await this.dipendenteService.getDipendenti();
-          })
-          .catch((res) => this.notification.error('Errore nella modifica'));
+        this.store.dispatch(DipendenteActions.editDipendente({dipendente}));
       }
     });
     // apri stessa modale della add, caricando l'utente selezionato sulla form come valore iniziale
@@ -75,13 +71,7 @@ export class DipendentiComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((confirmation) => {
       if (confirmation) {
-        this.dipendenteService
-          .deleteDipendente(dip)
-          .then(async (res) => {
-            this.notification.success('Cancellato con successo');
-            this.dataSource = await this.dipendenteService.getDipendenti();
-          })
-          .catch((res) => this.notification.error('Errore nella cancellazione'));
+       this.store.dispatch(DipendenteActions.deleteDipendente({id : dip.id!}))
       }
     });
     // apri dialog semplice di conferma (si/no)

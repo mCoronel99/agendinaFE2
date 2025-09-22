@@ -18,7 +18,7 @@ export class RuoliService{
     addRuolo(ruolo: Ruolo): Promise<Ruolo>{
         return firstValueFrom(
             this.http.post<Ruolo>(`${this.baseUrl}/create`, ruolo)
-            
+
         )
     }
     editRuolo(ruolo:Ruolo): Promise<Ruolo>{
@@ -26,10 +26,10 @@ export class RuoliService{
             this.http.put<Ruolo>(`${this.baseUrl}/update`, ruolo)
         )
     }
-    deleteRuolo(ruolo:Ruolo) : Promise <void>{
+    deleteRuolo(id:number) : Promise <void>{
         return firstValueFrom(
-            this.http.delete<void>(`${this.baseUrl}/delete/${ruolo.id}`)
+            this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
         )
     }
-    
+
 }

@@ -1,9 +1,9 @@
 <button mat-icon-button (click)="addRuoli()">
     <mat-icon>add</mat-icon>
   </button>
-   
-  <app-table 
-  [data]="dataSource"
+
+  <app-table
+  [data]="(dataSource$ | async) || []"
   [displayedColumns]="['id', 'tipo_ruoli']"
   [columnLabels]="{
   id:'ID',

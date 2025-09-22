@@ -10,7 +10,7 @@ export class ProgettoService {
     baseUrl = 'http://localhost:8080/api/progetto';
 
     constructor(private http: HttpClient){}
-    
+
     getProgetti(): Promise <Progetto[]>{
         return firstValueFrom(this.http.get<Progetto[]>(`${this.baseUrl}/getAll`));
     }
@@ -27,9 +27,9 @@ export class ProgettoService {
         )
     }
 
-    deleteProgetto(progetto: Progetto) : Promise<void>{
+    deleteProgetto(id: number) : Promise<void>{
         return firstValueFrom(
-            this.http.delete<void>(`${this.baseUrl}/delete/${progetto.id}`)
+            this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
         )
     }
 }

@@ -2,8 +2,8 @@
   <mat-icon>add</mat-icon>
 </button>
 
-<app-table 
-  [data]="dataSource"
+<app-table
+  [data]="(dataSource$ | async) || []"
   [displayedColumns]="['id', 'id_capo', 'nome']"
   [columnLabels]="{
   id: 'ID',

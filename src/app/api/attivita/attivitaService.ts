@@ -29,9 +29,9 @@ export class AttivitaService{
         )
     }
 
-    deleteAttivita(attivita: Attivita):Promise <void>{
+    deleteAttivita(id:number):Promise <void>{
         return firstValueFrom(
-            this.http.delete<void>(`${this.baseUrl}/delete/${attivita.id}`)
+            this.http.delete<void>(`${this.baseUrl}/delete/${id}`)
         )
     }
 }

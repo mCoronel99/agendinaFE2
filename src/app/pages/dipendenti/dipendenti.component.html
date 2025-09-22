@@ -1,9 +1,9 @@
 <button mat-icon-button (click)="addDipendente()">
   <mat-icon>add</mat-icon>
 </button>
- 
-<app-table 
-  [data]="dataSource"
+
+<app-table
+  [data]="(dataSource$ | async) || []"
   [displayedColumns]="['id', 'nome', 'cognome', 'data_nascita']"
   [columnLabels]="{
     id:'ID',
